@@ -369,7 +369,7 @@ func NewKubectlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 
       Find more information at:
             https://kubernetes.io/docs/reference/kubectl/overview/`),
-		Run: runHelp,
+		Run:                    runHelp,
 		BashCompletionFunction: bashCompletionFunc,
 	}
 
@@ -505,6 +505,7 @@ func NewKubectlCommand(in io.Reader, out, err io.Writer) *cobra.Command {
 	cmds.AddCommand(NewCmdApiVersions(f, ioStreams))
 	cmds.AddCommand(NewCmdApiResources(f, ioStreams))
 	cmds.AddCommand(NewCmdOptions(ioStreams.Out))
+	cmds.AddCommand(NewCmdHelloWorld(ioStreams.Out))
 
 	return cmds
 }
