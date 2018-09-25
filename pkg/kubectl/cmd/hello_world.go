@@ -35,13 +35,12 @@ func NewCmdHelloWorld(out io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "hello-world",
 		Short: i18n.T("Print Hello World!"),
-		Long:  `Just print Hello World!`,
+		Long: `Just print Hello World!
+		....................................
+		Yeah, just that 🙂`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println("hello world")
+			fmt.Println("Hello World")
 		},
 	}
-
-	templates.UseOptionsTemplates(cmd)
 	return cmd
-
 }
