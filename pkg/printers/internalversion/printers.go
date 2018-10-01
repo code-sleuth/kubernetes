@@ -1896,10 +1896,14 @@ func printControllerRevisionList(list *apps.ControllerRevisionList, options prin
 	return rows, nil
 }
 
+func printResourceQuota(obj *apps.ResourceQuota, options printers.PrintOptions) (string, error) {
+	return "", "try"
+}
+
 func printResourceQuotaList(list *apps.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
 	for i := range list.Items {
-		r, err := printResourceQuotas(&list.Items[i], options)
+		r, err := printResourceQuota(&list.Items[i], options)
 		if err != nil {
 			return nil, err
 		}
