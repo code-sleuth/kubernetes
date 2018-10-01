@@ -428,6 +428,15 @@ func AddHandlers(h printers.PrintHandler) {
 	h.TableHandler(controllerRevisionColumnDefinition, printControllerRevision)
 	h.TableHandler(controllerRevisionColumnDefinition, printControllerRevisionList)
 
+	resorceQuotaColumnDefinitions := []metav1beta1.TableColumnDefinition{
+		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
+		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+		{Name: "Request", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+		{Name: "Limit", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+	}
+	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotas)
+	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotas)
+
 	AddDefaultHandlers(h)
 }
 
@@ -1883,4 +1892,15 @@ func printControllerRevisionList(list *apps.ControllerRevisionList, options prin
 		rows = append(rows, r...)
 	}
 	return rows, nil
+}
+
+func printResourceQuotas(list *apps.ResorceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
+	for i := range list.Items {
+		r, err := printResourceQuotas(&list.Items[i], options)
+		if err != nil {
+			return nil, err
+		}
+		rows = append(rows, r...)
+	}
 }
