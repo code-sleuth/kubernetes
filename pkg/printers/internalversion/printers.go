@@ -1900,7 +1900,7 @@ func printResourceQuota(obj *apps.ResourceQuota, options printers.PrintOptions) 
 	return "", "try"
 }
 
-func printResourceQuotaList(list *apps.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printResourceQuotaList(list *v1.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
 	for i := range list.Items {
 		r, err := printResourceQuota(&list.Items[i], options)
