@@ -431,9 +431,8 @@ func AddHandlers(h printers.PrintHandler) {
 	resorceQuotaColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
 		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Request", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Limit", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Try", Type: "string", Description: "try"},
+		{Name: "Request", Type: "string", Description: "The description",
+		{Name: "Limit", Type: "string", Description: "The Description"},
 	}
 	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotaList)
 	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotaList)
@@ -1896,11 +1895,29 @@ func printControllerRevisionList(list *apps.ControllerRevisionList, options prin
 	return rows, nil
 }
 
-func printResourceQuota(obj *apps.ResourceQuota, options printers.PrintOptions) (string, error) {
-	return "", "try"
+func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+	row := metav1beta1.TableRow{
+		Object: runtime.RawExtension{Object: obj},
+	}
+
+	controllerRef := metav1.GetControllerOf(obj)
+	controllerName := "<none>"
+	if controllerRef != nil {
+		withKind := true
+		gv, err := schema.ParseGroupVersion(controllerRef.APIVersion)
+		if err != nil {
+			return nil, err
+		}
+		gvk := gv.WithKind(controllerRef.Kind)
+		controllerName = printers.FormatResourceName(gvk.GroupKind(), controllerRef.Name, withKind)
+	}
+	revision := obj.Revision
+	age := translateTimestampSince(obj.CreationTimestamp)
+	row.Cells = append(row.Cells, obj.Name, controllerName, revision, age)
+	return []metav1beta1.TableRow{row}, nil
 }
 
-func printResourceQuotaList(list *v1.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printResourceQuotaList(list *api.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
 	for i := range list.Items {
 		r, err := printResourceQuota(&list.Items[i], options)
