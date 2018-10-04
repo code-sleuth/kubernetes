@@ -431,10 +431,10 @@ func AddHandlers(h printers.PrintHandler) {
 	resorceQuotaColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
 		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Request", Type: "string", Description: "The description",
+		{Name: "Request", Type: "string", Description: "The description"},
 		{Name: "Limit", Type: "string", Description: "The Description"},
 	}
-	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotaList)
+	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuota)
 	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotaList)
 
 	AddDefaultHandlers(h)
