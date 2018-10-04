@@ -1911,7 +1911,7 @@ func printResourceQuota(obj *api.ResourceQuota, options printers.PrintOptions) (
 		gvk := gv.WithKind(controllerRef.Kind)
 		controllerName = printers.FormatResourceName(gvk.GroupKind(), controllerRef.Name, withKind)
 	}
-	revision := obj.Revision
+	revision := obj.Request
 	age := translateTimestampSince(obj.CreationTimestamp)
 	row.Cells = append(row.Cells, obj.Name, controllerName, revision, age)
 	return []metav1beta1.TableRow{row}, nil
