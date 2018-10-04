@@ -1899,21 +1899,7 @@ func printResourceQuota(obj *api.ResourceQuota, options printers.PrintOptions) (
 	row := metav1beta1.TableRow{
 		Object: runtime.RawExtension{Object: obj},
 	}
-
-	controllerRef := metav1.GetControllerOf(obj)
-	controllerName := "<none>"
-	if controllerRef != nil {
-		withKind := true
-		gv, err := schema.ParseGroupVersion(controllerRef.APIVersion)
-		if err != nil {
-			return nil, err
-		}
-		gvk := gv.WithKind(controllerRef.Kind)
-		controllerName = printers.FormatResourceName(gvk.GroupKind(), controllerRef.Name, withKind)
-	}
-	// revision := obj.Request
-	age := translateTimestampSince(obj.CreationTimestamp)
-	row.Cells = append(row.Cells, obj.Name, controllerName, age)
+	row.Cells = append(row.Cells, obj.Name, obj.Limit, age)
 	return []metav1beta1.TableRow{row}, nil
 }
 
