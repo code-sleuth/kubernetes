@@ -1895,7 +1895,7 @@ func printControllerRevisionList(list *apps.ControllerRevisionList, options prin
 	return rows, nil
 }
 
-func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printResourceQuota(obj *api.ResourceQuota, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	row := metav1beta1.TableRow{
 		Object: runtime.RawExtension{Object: obj},
 	}
