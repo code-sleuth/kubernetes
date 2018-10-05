@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -1895,11 +1896,25 @@ func printControllerRevisionList(list *apps.ControllerRevisionList, options prin
 	return rows, nil
 }
 
-func printResourceQuota(obj *api.ResourceQuota, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	row := metav1beta1.TableRow{
-		Object: runtime.RawExtension{Object: obj},
+		Object: runtime.RawExtension{Object: resourceQuota},
 	}
-	row.Cells = append(row.Cells, obj.Name, obj.Limit, age)
+	age := translateTimestampSince(resourceQuota.CreationTimestamp)
+	row.Cells = append(row.Cells, resourceQuota.Name, age)
+
+	resources := make([]api.ResourceName, 0, len(resourceQuota.Status.Hard))
+	for resource := range resourceQuota.Status.Hard {
+		resources = append(resources, resource)
+	}
+	sort.Sort(SortableResourceNames(resources))
+
+	for i := range resources {
+		resource := resources[i]
+		hardQuantity := resourceQuota.Status.Hard[resource]
+		usedQuantity := resourceQuota.Status.Used[resource]
+		row.Cells = append(row.Cells, usedQuantity.String(), hardQuantity.String())
+	}
 	return []metav1beta1.TableRow{row}, nil
 }
 
