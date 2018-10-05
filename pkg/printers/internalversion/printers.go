@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -1903,18 +1902,18 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 	age := translateTimestampSince(resourceQuota.CreationTimestamp)
 	row.Cells = append(row.Cells, resourceQuota.Name, age)
 
-	resources := make([]api.ResourceName, 0, len(resourceQuota.Status.Hard))
-	for resource := range resourceQuota.Status.Hard {
-		resources = append(resources, resource)
-	}
-	sort.Sort(SortableResourceNames(resources))
+	// resources := make([]api.ResourceName, 0, len(resourceQuota.Status.Hard))
+	// for resource := range resourceQuota.Status.Hard {
+	// 	resources = append(resources, resource)
+	// }
+	// sort.Sort(SortableResourceNames(resources))
 
-	for i := range resources {
-		resource := resources[i]
-		// hardQuantity := resourceQuota.Status.Hard[resource]
-		usedQuantity := resourceQuota.Status.Used[resource]
-		row.Cells = append(row.Cells, usedQuantity.String())
-	}
+	// for i := range resources {
+	// 	resource := resources[i]
+	// 	// hardQuantity := resourceQuota.Status.Hard[resource]
+	// 	// usedQuantity := resourceQuota.Status.Used[resource]
+	// 	// row.Cells = append(row.Cells, usedQuantity.String())
+	// }
 	return []metav1beta1.TableRow{row}, nil
 }
 
