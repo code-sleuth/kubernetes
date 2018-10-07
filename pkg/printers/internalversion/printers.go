@@ -1913,7 +1913,7 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 		resource := resources[i]
 		hardQuantity := resource
 		// usedQuantity := resourceQuota.Status.Used[resource]
-		row.Cells = append(row.Cells, hardQuantity, resourceQuota.Spec)
+		row.Cells = append(row.Cells, hardQuantity, resourceQuota.Spec.Hard)
 	}
 	return []metav1beta1.TableRow{row}, nil
 }
