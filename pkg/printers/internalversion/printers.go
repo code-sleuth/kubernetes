@@ -1911,7 +1911,7 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 
 	for i := range resources {
 		resource := resources[i]
-		hardQuantity := resourceQuota.Status.Hard[resource].cpu
+		hardQuantity := resourceQuota.Status
 		// usedQuantity := resourceQuota.Status.Used[resource]
 		row.Cells = append(row.Cells, hardQuantity)
 	}
