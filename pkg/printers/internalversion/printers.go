@@ -1910,7 +1910,7 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 	sort.Sort(SortableResourceNames(resources))
 
 	for i := range resources {
-		resource := resources[i][0]
+		resource := resources[i][1]
 		hardQuantity := resource
 		// usedQuantity := resourceQuota.Status.Used[resource]
 		row.Cells = append(row.Cells, hardQuantity)
