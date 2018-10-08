@@ -1908,24 +1908,29 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 	}
 	sort.Sort(SortableResourceNames(resources))
 
+	var requestColumn string
+	var limitColumn string
 	for i := range resources {
 		resource := resources[i]
 		usedQuantity := resourceQuota.Status.Used[resource]
 		hardQuantity := resourceQuota.Status.Hard[resource]
-		requestColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
-		requestColumn = trimPodsFromString(requestColumn)
-		//limitColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
-		row.Cells = append(row.Cells, requestColumn)
+		requestColumn += resource.String() + ": " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
+		limitColumn += resource.String() + ": " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
 	}
+	requestColumn = trimPodsFromString(requestColumn)
+	limitColumn = trimPodsFromString(limitColumn)
+
+	row.Cells = append(row.Cells, requestColumn, limitColumn)
 	return []metav1beta1.TableRow{row}, nil
 }
 
 func trimPodsFromString(s string) string {
-	if index := strings.Index(s, "pods"); index != -1 {
-		return s[:index]
+	if i := strings.Index(s, ", pods"); i != -1 {
+		return s[:i]
 	}
 	return s
 }
+
 func printResourceQuotaList(list *api.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
 	for i := range list.Items {
