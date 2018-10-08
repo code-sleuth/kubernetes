@@ -1899,8 +1899,6 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 	row := metav1beta1.TableRow{
 		Object: runtime.RawExtension{Object: resourceQuota},
 	}
-	age := translateTimestampSince(resourceQuota.CreationTimestamp)
-	row.Cells = append(row.Cells, resourceQuota.Name, age)
 
 	resources := make([]api.ResourceName, 0, len(resourceQuota.Status.Hard))
 	for resource := range resourceQuota.Status.Hard {
@@ -1914,21 +1912,27 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 		resource := resources[i]
 		usedQuantity := resourceQuota.Status.Used[resource]
 		hardQuantity := resourceQuota.Status.Hard[resource]
-		requestColumn += resource.String() + ": " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
-		limitColumn += resource.String() + ": " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
-	}
-	requestColumn = trimPodsFromString(requestColumn)
-	limitColumn = trimPodsFromString(limitColumn)
 
-	row.Cells = append(row.Cells, requestColumn, limitColumn)
+		if strings.HasPrefix(resource.String(), "request") {
+			if strings.HasPrefix(resource.String(), "requests.cpu") {
+				requestColumn += "cpu: " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
+			} else {
+				requestColumn += "memory: " + usedQuantity.String() + "/" + hardQuantity.String()
+			}
+		}
+
+		if strings.HasPrefix(resource.String(), "limit") {
+			if strings.HasPrefix(resource.String(), "limits.cpu") {
+				limitColumn += "cpu: " + usedQuantity.String() + "/" + hardQuantity.String() + ", "
+			} else {
+				limitColumn += "memory: " + usedQuantity.String() + "/" + hardQuantity.String()
+			}
+		}
+	}
+
+	age := translateTimestampSince(resourceQuota.CreationTimestamp)
+	row.Cells = append(row.Cells, resourceQuota.Name, age, requestColumn, limitColumn)
 	return []metav1beta1.TableRow{row}, nil
-}
-
-func trimPodsFromString(s string) string {
-	if i := strings.Index(s, ", pods"); i != -1 {
-		return s[:i]
-	}
-	return s
 }
 
 func printResourceQuotaList(list *api.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
