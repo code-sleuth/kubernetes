@@ -1911,14 +1911,22 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 
 	for i := range resources {
 		resource := resources[i]
-		hardQuantity := resource
-		s := resourceQuota.Spec.Hard[resource]
-		// usedQuantity := resourceQuota.Status.Used[resource]
-		row.Cells = append(row.Cells, hardQuantity s.String())
+		usedQuantity := resourceQuota.Status.Used[resource]
+		hardQuantity := resourceQuota.Status.Hard[resource]
+		requestColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
+		requestColumn = trimStringFromPods(requestColumn)
+		//limitColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
+		row.Cells = append(row.Cells, requestColumn)
 	}
 	return []metav1beta1.TableRow{row}, nil
 }
 
+func trimStringFromPods(s string) string {
+	if index := strings.Index(s, "pods"); index != -1 {
+		return s[:index]
+	}
+	return s
+}
 func printResourceQuotaList(list *api.ResourceQuotaList, options printers.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(list.Items))
 	for i := range list.Items {
