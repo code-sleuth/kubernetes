@@ -432,8 +432,8 @@ func AddHandlers(h printers.PrintHandler) {
 	resorceQuotaColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
 		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Request", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]}},
-		{Name: "Limit", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]}},
+		{Name: "Request", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
+		{Name: "Limit", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
 	}
 	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuota)
 	h.TableHandler(resorceQuotaColumnDefinitions, printResourceQuotaList)
@@ -447,7 +447,6 @@ func AddDefaultHandlers(h printers.PrintHandler) {
 	objectMetaColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Name", Type: "string", Format: "name", Description: metav1.ObjectMeta{}.SwaggerDoc()["name"]},
 		{Name: "Age", Type: "string", Description: metav1.ObjectMeta{}.SwaggerDoc()["creationTimestamp"]},
-		{Name: "Another one", Type: "string", Description: "Another One Here"},
 	}
 	h.DefaultTableHandler(objectMetaColumnDefinitions, printObjectMeta)
 }
