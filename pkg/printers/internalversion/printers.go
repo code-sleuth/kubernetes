@@ -1913,14 +1913,14 @@ func printResourceQuota(resourceQuota *api.ResourceQuota, options printers.Print
 		usedQuantity := resourceQuota.Status.Used[resource]
 		hardQuantity := resourceQuota.Status.Hard[resource]
 		requestColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
-		requestColumn = trimStringFromPods(requestColumn)
+		requestColumn = trimPodsFromString(requestColumn)
 		//limitColumn := resource.String() + ":" + usedQuantity.String() + "/" + hardQuantity.String()
 		row.Cells = append(row.Cells, requestColumn)
 	}
 	return []metav1beta1.TableRow{row}, nil
 }
 
-func trimStringFromPods(s string) string {
+func trimPodsFromString(s string) string {
 	if index := strings.Index(s, "pods"); index != -1 {
 		return s[:index]
 	}
